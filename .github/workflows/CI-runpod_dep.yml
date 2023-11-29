@@ -4,10 +4,10 @@ on:
   repository_dispatch:
     types: [python-package-release]
 
-  push:
-    branches:
-      - "main"
-      - "master"
+#  push:
+#    branches:
+#      - "main"
+#      - "master"
 
   workflow_dispatch:
 

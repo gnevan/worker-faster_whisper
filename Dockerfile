@@ -17,9 +17,10 @@ ENV SHELL=/bin/bash
 WORKDIR /
 
 # Update and upgrade the system packages (Worker Template)
+# =7:6.0-6ubuntu1
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install --yes --no-install-recommends sudo ca-certificates git wget curl bash libgl1 libx11-6 software-properties-common ffmpeg=7:6.0-6ubuntu1 build-essential -y &&\
+    apt-get install --yes --no-install-recommends sudo ca-certificates git wget curl bash libgl1 libx11-6 software-properties-common ffmpeg build-essential -y &&\
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*

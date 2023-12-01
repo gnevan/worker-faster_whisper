@@ -2,7 +2,8 @@
 # initial 11.7.1-cudnn8-runtime-ubuntu20.04
 # update 11.8.0-cudnn8-runtime-ubuntu20.04
 # experimental 12.2.2-cudnn8-runtime-ubuntu20.04
-FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu20.04
+# 11.8.0-cudnn8-runtime-ubuntu22.04
+FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
 
 # Remove any third-party apt sources to avoid issues with expiring keys.
 RUN rm -f /etc/apt/sources.list.d/*.list
@@ -22,6 +23,8 @@ RUN apt-get update -y && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
+
+RUN ffmpeg -version | grep 'ffmpeg version' > ./ffmpeg_version.txt
 
 # Install CUDA 12
 # wget https://developer.download.nvidia.com/compute/cuda/12.3.1/local_installers/cuda_12.3.1_545.23.08_linux.run

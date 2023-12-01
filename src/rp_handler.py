@@ -14,6 +14,11 @@ from runpod.serverless.utils.rp_validator import validate
 import runpod
 import predict
 
+# print the ffmpeg version
+def print_ver(fname):
+    with open(fname, 'r') as f:
+        contents = f.read()
+        print(contents)
 
 MODEL = predict.Predictor()
 MODEL.setup()
@@ -46,6 +51,10 @@ def run_whisper_job(job):
     Returns:
     dict: The result of the prediction
     '''
+
+    # print ffmpeg version
+    print_ver('./ffmpeg_version.txt')
+    
     job_input = job['input']
 
     with rp_debugger.LineTimer('validation_step'):

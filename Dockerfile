@@ -1,3 +1,4 @@
+ARG progress=plain
 # Use specific version of nvidia cuda image
 # initial 11.7.1-cudnn8-runtime-ubuntu20.04
 # update 11.8.0-cudnn8-runtime-ubuntu20.04
@@ -25,7 +26,15 @@ RUN apt-get update -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
 
-COPY bin /usr/bin
+#COPY bin /usr/bin
+
+# Install latest ffmpeg from compiled source
+ADD https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz /lctmp/
+RUN cp /lctmp/ffmpeg-6.1-amd64-static/ffmpeg /usr/bin/ && \
+    chmod 744 /lctmp/ffmpeg-6.1-amd64-static/ffmpeg && \
+    cp /lctmp/ffmpeg-6.1-amd64-static/ffprobe /usr/bin/ && \
+    chmod 744 /lctmp/ffmpeg-6.1-amd64-static/ffprobe && \
+    rm -rf /lctmp
 
 RUN ffmpeg -version | grep 'ffmpeg version' > ./ffmpeg_version.txt
 

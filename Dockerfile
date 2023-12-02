@@ -30,14 +30,16 @@ RUN apt-get update -y && \
 
 # Install latest ffmpeg from compiled source
 ADD https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz /lctmp/
-RUN ls -laR /lctmp/
-RUN cp /lctmp/ffmpeg-release-amd64-static/ffmpeg-6.1-amd64-static/ffmpeg /usr/bin/ && \
-    chmod 744 /lctmp/ffmpeg-release-amd64-static/ffmpeg-6.1-amd64-static/ffmpeg && \
-    cp /lctmp/ffmpeg-release-amd64-static/ffmpeg-6.1-amd64-static/ffprobe /usr/bin/ && \
-    chmod 744 /lctmp/ffmpeg-release-amd64-static/ffmpeg-6.1-amd64-static/ffprobe && \
-    rm -rf /lctmp
+RUN tar -xJvf /lctmp/ffmpeg-release-amd64-static.tar.xz && \
+    ls -laR /lctmp/ && \
+    cp /lctmp/ffmpeg-6.1-amd64-static/ffmpeg /usr/bin/ && \
+    chmod 744 /usr/bin/ffmpeg && \
+    cp /lctmp/ffmpeg-6.1-amd64-static/ffprobe /usr/bin/ && \
+    chmod 744 /usr/bin/ffprobe && \
+    rm -rf /lctmp && \
+    ffmpeg -version | grep 'ffmpeg version' > ./ffmpeg_version.txt
 
-RUN ffmpeg -version | grep 'ffmpeg version' > ./ffmpeg_version.txt
+#RUN ffmpeg -version | grep 'ffmpeg version' > ./ffmpeg_version.txt
 
 # Install CUDA 12
 # wget https://developer.download.nvidia.com/compute/cuda/12.3.1/local_installers/cuda_12.3.1_545.23.08_linux.run

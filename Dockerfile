@@ -30,7 +30,7 @@ RUN apt-get update -y && \
 
 # Install latest ffmpeg from compiled source
 ADD https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz /lctmp/
-RUN tar -xJvf /lctmp/ffmpeg-release-amd64-static.tar.xz ffmpeg ffprobe -C /lctmp/ && \
+RUN tar -xJvf /lctmp/ffmpeg-release-amd64-static.tar.xz -C /lctmp/ && \
     ls -laR /lctmp/ && \
     chmod 744 /lctmp/ffmpeg-6.1-amd64-static/ffmpeg && \
     cp /lctmp/ffmpeg-6.1-amd64-static/ffmpeg /usr/bin/ && \

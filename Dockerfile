@@ -3,7 +3,7 @@
 # update 11.8.0-cudnn8-runtime-ubuntu20.04
 # experimental 12.2.2-cudnn8-runtime-ubuntu20.04
 # 11.8.0-cudnn8-runtime-ubuntu22.04
-FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
+FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu20.04
 
 # Remove any third-party apt sources to avoid issues with expiring keys.
 RUN rm -f /etc/apt/sources.list.d/*.list
@@ -20,10 +20,12 @@ WORKDIR /
 # =7:6.0-6ubuntu1
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install --yes --no-install-recommends sudo ca-certificates git wget curl bash libgl1 libx11-6 software-properties-common ffmpeg build-essential -y &&\
+    apt-get install --yes --no-install-recommends sudo ca-certificates git wget curl bash libgl1 libx11-6 software-properties-common build-essential -y &&\
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
+
+COPY bin /usr/bin
 
 RUN ffmpeg -version | grep 'ffmpeg version' > ./ffmpeg_version.txt
 

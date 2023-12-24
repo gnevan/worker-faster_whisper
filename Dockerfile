@@ -29,13 +29,17 @@ RUN apt-get update -y && \
 #COPY bin /usr/bin
 
 # Install latest ffmpeg from compiled source
-ADD https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz /lctmp/
-RUN tar -xJvf /lctmp/ffmpeg-release-amd64-static.tar.xz -C /lctmp/ && \
+#ADD https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz /lctmp/
+# /lctmp/ffmpeg-6.1-amd64-static/ffmpeg
+ADD https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-amd64-static.tar.xz /lctmp/
+RUN tar -xJvf /lctmp/ffmpeg-git-amd64-static.tar.xz -C /lctmp/ && \
     ls -laR /lctmp/ && \
-    chmod 744 /lctmp/ffmpeg-6.1-amd64-static/ffmpeg && \
-    cp /lctmp/ffmpeg-6.1-amd64-static/ffmpeg /usr/bin/ && \
-    chmod 744 /lctmp/ffmpeg-6.1-amd64-static/ffprobe && \
-    cp /lctmp/ffmpeg-6.1-amd64-static/ffprobe /usr/bin/ && \
+    chmod 755 /lctmp/ffmpeg-git-20231128-amd64-static/ffmpeg && \
+    cp /lctmp/ffmpeg-git-20231128-amd64-static/ffmpeg /usr/bin/ && \
+    chmod 755 /lctmp/ffmpeg-git-20231128-amd64-static/ffprobe && \
+    cp /lctmp/ffmpeg-git-20231128-amd64-static/ffprobe /usr/bin/ && \
+    chmod 755 /lctmp/ffmpeg-git-20231128-amd64-static/qt-faststart && \
+    cp /lctmp/ffmpeg-git-20231128-amd64-static/qt-faststart /usr/bin/ && \
     rm -rf /lctmp && \
     ffmpeg -version | grep 'ffmpeg version' > ./ffmpeg_version.txt
 

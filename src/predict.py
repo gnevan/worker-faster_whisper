@@ -114,8 +114,8 @@ class Predictor:
         elif transcription == "formatted_text":
             transcription = "\n".join([segment.text.lstrip()
                                       for segment in segments])
-            translation = "\n".join([segment.text.lstrip()]
-                                    for segment in segments) if translate else None
+            translation = "\n".join([segment.text.lstrip()
+                                    for segment in translation_segments]) if translate else None
 
         elif transcription == "srt":
             transcription = write_srt(segments)

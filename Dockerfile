@@ -34,12 +34,12 @@ RUN apt-get update -y && \
 ADD https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-amd64-static.tar.xz /lctmp/
 RUN tar -xJvf /lctmp/ffmpeg-git-amd64-static.tar.xz -C /lctmp/ && \
     ls -laR /lctmp/ && \
-    chmod 755 /lctmp/ffmpeg-git-20231128-amd64-static/ffmpeg && \
-    cp /lctmp/ffmpeg-git-20231128-amd64-static/ffmpeg /usr/bin/ && \
-    chmod 755 /lctmp/ffmpeg-git-20231128-amd64-static/ffprobe && \
-    cp /lctmp/ffmpeg-git-20231128-amd64-static/ffprobe /usr/bin/ && \
-    chmod 755 /lctmp/ffmpeg-git-20231128-amd64-static/qt-faststart && \
-    cp /lctmp/ffmpeg-git-20231128-amd64-static/qt-faststart /usr/bin/ && \
+    chmod 755 /lctmp/ffmpeg-git-20231229-amd64-static/ffmpeg && \
+    cp /lctmp/ffmpeg-git-20231229-amd64-static/ffmpeg /usr/bin/ && \
+    chmod 755 /lctmp/ffmpeg-git-20231229-amd64-static/ffprobe && \
+    cp /lctmp/ffmpeg-git-20231229-amd64-static/ffprobe /usr/bin/ && \
+    chmod 755 /lctmp/ffmpeg-git-20231229-amd64-static/qt-faststart && \
+    cp /lctmp/ffmpeg-git-20231229-amd64-static/qt-faststart /usr/bin/ && \
     rm -rf /lctmp && \
     ffmpeg -version | grep 'ffmpeg version' > ./ffmpeg_version.txt
 

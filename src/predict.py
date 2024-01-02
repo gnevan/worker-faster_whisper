@@ -133,7 +133,7 @@ class Predictor:
 
         results = {
             "segments": format_segments(segments),
-            "segments_translation": format_segments(translation_segments) if (translation_segments != None) else None
+            "segments_translation": format_segments(translation_segments) if (translation_segments != None) else None,
             "detected_language": info.language,
             "transcription": transcription,
             "translation": translation,

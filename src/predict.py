@@ -31,7 +31,7 @@ class Predictor:
     def setup(self):
         """Load the model into memory to make running multiple predictions efficient"""
         model_names = ["tiny", "base", "small",
-                       "medium", "large-v1", "large-v2", "large-v3"]
+                       "medium", "large-v3"]
         with ThreadPoolExecutor() as executor:
             for model_name, model in executor.map(self.load_model, model_names):
                 if model_name is not None:
@@ -74,7 +74,7 @@ class Predictor:
         else:
             temperature = [temperature]
 
-        segments, info = list(model.transcribe(str(audio),
+        segments, info = model.transcribe(str(audio),
                                                language=language,
                                                task="transcribe",
                                                beam_size=beam_size,
@@ -94,7 +94,7 @@ class Predictor:
                                                max_initial_timestamp=1.0,
                                                word_timestamps=word_timestamps,
                                                vad_filter=enable_vad
-                                               ))
+                                               )
 
         segments = list(segments)
 
@@ -104,6 +104,10 @@ class Predictor:
                 task="translate",
                 temperature=temperature
             )
+            translation_segments = list(translation_segments)
+
+        else:
+            translation_segments = None
 
         if transcription == "plain_text":
             transcription = " ".join([segment.text.lstrip()
@@ -129,6 +133,7 @@ class Predictor:
 
         results = {
             "segments": format_segments(segments),
+            "segments_translation": format_segments(translation_segments) if (translation_segments != None) else None
             "detected_language": info.language,
             "transcription": transcription,
             "translation": translation,

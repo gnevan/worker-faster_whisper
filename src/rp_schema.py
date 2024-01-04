@@ -52,7 +52,7 @@ INPUT_VALIDATIONS = {
     'length_penalty': {
         'type': float,
         'required': False,
-        'default': 0
+        'default': 1
     },
     'suppress_tokens': {
         'type': str,
@@ -99,4 +99,49 @@ INPUT_VALIDATIONS = {
         'required': False,
         'default': False
     },
+    'repetition_penalty': {
+        'type': float,
+        'required': False,
+        'default': 1.0
+    },
+    'no_repeat_ngram_size': {
+        'type': int,
+        'required': False,
+        'default': 0
+    },
+    'prompt_reset_on_temperature': {
+        'type': float,
+        'required': False,
+        'default': 0.5
+    },
+    'suppress_blank': {
+        'type': bool,
+        'required': False,
+        'default': True
+    },
+    'without_timestamps': {
+        'type': bool,
+        'required': False,
+        'default': False
+    },
+    'max_initial_timestamp': {
+        'type': float,
+        'required': False,
+        'default': 1.0
+    },
+    'prepend_punctuations': {
+        'type': str,
+        'required': False,
+        'default': "\"'“¿([{-"
+    },
+    'append_punctuations': {
+        'type': str,
+        'required': False,
+        'default': "\"'.。,，!！?？:：”)]}、"
+    },
+    'prefix': {
+        'type': str,
+        'required': False,
+        'default': None
+    }
 }

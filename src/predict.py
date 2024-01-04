@@ -116,7 +116,12 @@ class Predictor:
             translation_segments, translation_info = model.transcribe(
                 str(audio),
                 task="translate",
-                temperature=temperature
+                temperature=temperature,
+                beam_size=beam_size,
+                best_of=best_of,
+                patience=patience,
+                length_penalty=length_penalty,
+                repetition_penalty=repetition_penalty
             )
             translation_segments = list(translation_segments)
 

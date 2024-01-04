@@ -57,7 +57,16 @@ class Predictor:
         logprob_threshold=-1.0,
         no_speech_threshold=0.6,
         enable_vad=False,
-        word_timestamps=False
+        word_timestamps=False,
+        repetition_penalty=1.0,
+        no_repeat_ngram_size=0,
+        prompt_reset_on_temperature=0.5,
+        suppress_blank=True,
+        without_timestamps=False,
+        max_initial_timestamp=1.0,
+        prepend_punctuations="\"'“¿([{-",
+        append_punctuations="\"'.。,，!！?？:：”)]}、",
+        prefix=None
     ):
         """
         Run a single prediction on the model
@@ -87,13 +96,18 @@ class Predictor:
                                                no_speech_threshold=no_speech_threshold,
                                                condition_on_previous_text=condition_on_previous_text,
                                                initial_prompt=initial_prompt,
-                                               prefix=None,
-                                               suppress_blank=True,
+                                               prefix=prefix,#
+                                               suppress_blank=suppress_blank,#
                                                suppress_tokens=[-1],
-                                               without_timestamps=False,
-                                               max_initial_timestamp=1.0,
+                                               without_timestamps=without_timestamps,#
+                                               max_initial_timestamp=max_initial_timestamp,#
                                                word_timestamps=word_timestamps,
-                                               vad_filter=enable_vad
+                                               vad_filter=enable_vad,
+                                               repetition_penalty=repetition_penalty,
+                                               no_repeat_ngram_size=no_repeat_ngram_size,
+                                               prompt_reset_on_temperature=prompt_reset_on_temperature,
+                                               prepend_punctuations=prepend_punctuations,
+                                               append_punctuations=append_punctuations
                                                )
 
         segments = list(segments)

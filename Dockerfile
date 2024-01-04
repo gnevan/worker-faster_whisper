@@ -33,15 +33,15 @@ RUN apt-get update -y && \
 # /lctmp/ffmpeg-6.1-amd64-static/ffmpeg
 ADD https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-amd64-static.tar.xz /lctmp/
 RUN tar -xJvf /lctmp/ffmpeg-git-amd64-static.tar.xz -C /lctmp/ && \
-    ls -l /lctmp/ && \
-    ffmpeg_dir=$(ls -1 ffmpeg-git-*-amd64-static /lctmp/ | head -1) && \
+    ls -1 -d /lctmp/ && \
+    ffmpeg_dir=$(ls -1 -d /lctmp/ffmpeg-git-*-amd64-static | head -1) && \
     echo $ffmpeg_dir && \
-    chmod 755 /lctmp/"$ffmpeg_dir"ffmpeg && \
-    cp /lctmp/"$ffmpeg_dir"ffmpeg /usr/bin/ && \
-    chmod 755 /lctmp/"$ffmpeg_dir"ffprobe && \
-    cp /lctmp/"$ffmpeg_dir"ffprobe /usr/bin/ && \
-    chmod 755 /lctmp/"$ffmpeg_dir"qt-faststart && \
-    cp /lctmp/"$ffmpeg_dir"qt-faststart /usr/bin/ && \
+    chmod 755 "$ffmpeg_dir"/ffmpeg && \
+    cp "$ffmpeg_dir"/ffmpeg /usr/bin/ && \
+    chmod 755 "$ffmpeg_dir"/ffprobe && \
+    cp "$ffmpeg_dir"/ffprobe /usr/bin/ && \
+    chmod 755 "$ffmpeg_dir"/qt-faststart && \
+    cp "$ffmpeg_dir"/qt-faststart /usr/bin/ && \
     rm -rf /lctmp && \
     ffmpeg -version | grep 'ffmpeg version' > ./ffmpeg_version.txt
 

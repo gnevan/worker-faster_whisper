@@ -129,28 +129,28 @@ class Predictor:
 
         if transcription == "plain_text":
             transcription = " ".join([segment.text.lstrip()
-                                     for segment in segments]) if !translate else None
+                                     for segment in segments]) if not translate else None
             translation = " ".join([segment.text.lstrip()
                                     for segment in translation_segments]) if translate else None
 
         elif transcription == "formatted_text":
             transcription = "\n".join([segment.text.lstrip()
-                                      for segment in segments]) if !translate else None
+                                      for segment in segments]) if not translate else None
             translation = "\n".join([segment.text.lstrip()
                                     for segment in translation_segments]) if translate else None
 
         elif transcription == "srt":
-            transcription = write_srt(segments) if !translate else None
+            transcription = write_srt(segments) if not translate else None
             translation = write_srt(
                 translation_segments) if translate else None
 
         else:
-            transcription = write_vtt(segments) if !translate else None
+            transcription = write_vtt(segments) if not translate else None
             translation = write_vtt(
                 translation_segments) if translate else None
 
         results = {
-            "segments": format_segments(segments) if !translate else None,
+            "segments": format_segments(segments) if not translate else None,
             "segments_translation": format_segments(translation_segments) if translate else None,
             "detected_language": info.language,
             "transcription": transcription,

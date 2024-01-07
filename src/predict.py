@@ -82,8 +82,24 @@ class Predictor:
             )
         else:
             temperature = [temperature]
+        
+        if translate:
+            segments = None
+            translation_segments, translation_info = model.transcribe(
+                str(audio),
+                task="translate",
+                temperature=temperature,
+                beam_size=beam_size,
+                best_of=best_of,
+                patience=patience,
+                length_penalty=length_penalty,
+                repetition_penalty=repetition_penalty
+            )
+            translation_segments = list(translation_segments)
 
-        segments, info = model.transcribe(str(audio),
+        else:
+            translation_segments = None
+            segments, info = model.transcribe(str(audio),
                                                language=language,
                                                task="transcribe",
                                                beam_size=beam_size,
@@ -109,50 +125,33 @@ class Predictor:
                                                prepend_punctuations=prepend_punctuations,
                                                append_punctuations=append_punctuations
                                                )
-
-        segments = list(segments)
-
-        if translate:
-            translation_segments, translation_info = model.transcribe(
-                str(audio),
-                task="translate",
-                temperature=temperature,
-                beam_size=beam_size,
-                best_of=best_of,
-                patience=patience,
-                length_penalty=length_penalty,
-                repetition_penalty=repetition_penalty
-            )
-            translation_segments = list(translation_segments)
-
-        else:
-            translation_segments = None
+            segments = list(segments)
 
         if transcription == "plain_text":
             transcription = " ".join([segment.text.lstrip()
-                                     for segment in segments])
+                                     for segment in segments]) if !translate else None
             translation = " ".join([segment.text.lstrip()
                                     for segment in translation_segments]) if translate else None
 
         elif transcription == "formatted_text":
             transcription = "\n".join([segment.text.lstrip()
-                                      for segment in segments])
+                                      for segment in segments]) if !translate else None
             translation = "\n".join([segment.text.lstrip()
                                     for segment in translation_segments]) if translate else None
 
         elif transcription == "srt":
-            transcription = write_srt(segments)
+            transcription = write_srt(segments) if !translate else None
             translation = write_srt(
                 translation_segments) if translate else None
 
         else:
-            transcription = write_vtt(segments)
+            transcription = write_vtt(segments) if !translate else None
             translation = write_vtt(
                 translation_segments) if translate else None
 
         results = {
-            "segments": format_segments(segments),
-            "segments_translation": format_segments(translation_segments) if (translation_segments != None) else None,
+            "segments": format_segments(segments) if !translate else None,
+            "segments_translation": format_segments(translation_segments) if translate else None,
             "detected_language": info.language,
             "transcription": transcription,
             "translation": translation,

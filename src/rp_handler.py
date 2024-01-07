@@ -61,7 +61,7 @@ def run_whisper_job(job):
         input_validation = validate(job_input, INPUT_VALIDATIONS)
 
         if 'errors' in input_validation:
-            return {"error": input_validation['errors']}
+            return {'error': input_validation['errors']}
         job_input = input_validation['validated_input']
 
     if not job_input.get('audio', False) and not job_input.get('audio_base64', False):

@@ -1,72 +1,75 @@
-ARG BASE_IMAGE
-FROM ${BASE_IMAGE}
+# https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html
+# https://github.com/jupyter/docker-stacks/blob/main/base-notebook/Dockerfile
+# https://hub.docker.com/repository/docker/mobigroup/pygmtsar
+# host platform compilation:
+# docker build . -f pygmtsar.Dockerfile -t mobigroup/pygmtsar:latest --no-cache
+# cross-compilation:
+# docker buildx build . -f pygmtsar.Dockerfile -t mobigroup/pygmtsar:latest --no-cache --platform linux/amd64 --load
+FROM jupyter/scipy-notebook:ubuntu-22.04
 
-ARG TORCH
-ARG PYTHON_VERSION
+USER root
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# install GMTSAR dependencies and some helpful command-line tools
+RUN apt-get -y update \
+&&  apt-get -y install git gdal-bin libgdal-dev subversion curl jq \
+&&  apt-get -y install csh autoconf make gfortran \
+&&  apt-get -y install libtiff5-dev libhdf5-dev liblapack-dev libgmt-dev gmt \
+&&  apt-get -y install zip htop mc netcdf-bin \
+&&  apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set environment variables
-ENV DEBIAN_FRONTEND=noninteractive
-ENV SHELL=/bin/bash
+# define installation and binaries search paths
+ARG GMTSAR=/usr/local/GMTSAR
+ARG ORBITS=/usr/local/orbits
+ENV PATH=${GMTSAR}/bin:$PATH
 
-# Set the working directory
-WORKDIR /
+# install GMTSAR from git
+RUN cd $(dirname ${GMTSAR}) \
+&&  git config --global advice.detachedHead false \
+&&  git clone --branch master https://github.com/gmtsar/gmtsar GMTSAR \
+&&  cd ${GMTSAR} \
+&&  git checkout e98ebc0f4164939a4780b1534bac186924d7c998 \
+&&  autoconf \
+&&  ./configure --with-orbits-dir=${ORBITS} CFLAGS='-z muldefs' LDFLAGS='-z muldefs' \
+&&  make \
+&&  make install
 
-# Create workspace directory
-RUN mkdir /workspace
+# install PyGMTSAR and additional libraries
+RUN apt-get -y update \
+&&  apt-get -y install xvfb libegl1-mesa \
+&&  apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN conda install -y -c conda-forge vtk panel xvfbwrapper pyvista
+# magick fix for the library
+RUN pip3 uninstall -y h5py
+# use requirements.sh to build the installation command
+RUN pip3 install \
+    asf_search==7.0.4 \
+    h5netcdf==1.3.0 \
+    h5py==3.10.0 \
+    ipywidgets==8.1.1 \
+    ipyleaflet==0.19.1 \
+    remotezip==0.12.2 \
+    pygmtsar \
+&& jupyter lab build \
+&& jupyter labextension install jupyter-leaflet \
+&& jupyter labextension list
 
-# Update, upgrade, install packages, install python if PYTHON_VERSION is specified, clean up
-RUN apt-get update --yes && \
-    apt-get upgrade --yes && \
-    apt install --yes --no-install-recommends git wget curl bash libgl1 software-properties-common openssh-server nginx && \
-    if [ -n "${PYTHON_VERSION}" ]; then \
-        add-apt-repository ppa:deadsnakes/ppa && \
-        apt install "python${PYTHON_VERSION}-dev" "python${PYTHON_VERSION}-venv" -y --no-install-recommends; \
-    fi && \
-    apt-get autoremove -y && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+# modify start-notebook.py to start Xvfb
+RUN sed -i '/import sys/a \
+# Start Xvfb\n\
+import xvfbwrapper\n\
+display = xvfbwrapper.Xvfb(width=1280, height=1024)\n\
+display.start()' /usr/local/bin/start-notebook.py
 
-# Set up Python and pip only if PYTHON_VERSION is specified
-RUN if [ -n "${PYTHON_VERSION}" ]; then \
-        ln -s /usr/bin/python${PYTHON_VERSION} /usr/bin/python && \
-        rm /usr/bin/python3 && \
-        ln -s /usr/bin/python${PYTHON_VERSION} /usr/bin/python3 && \
-        curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-        python get-pip.py; \
-    fi
+# grant passwordless sudo rights
+RUN echo "${NB_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
+# switch user
+USER    ${NB_UID}
+WORKDIR "${HOME}"
 
-RUN pip install --upgrade --no-cache-dir pip
-# Install PyTorch only if TORCH is specified
-RUN if [ -n "${TORCH}" ]; then pip install --upgrade --no-cache-dir ${TORCH}; fi 
-RUN pip install --upgrade --no-cache-dir jupyterlab ipywidgets jupyter-archive jupyter_contrib_nbextensions
-
-# Set up Jupyter Notebook
-RUN pip install notebook==6.5.5
-RUN jupyter contrib nbextension install --user && \
-    jupyter nbextension enable --py widgetsnbextension
-
-# Remove existing SSH host keys
-RUN rm -f /etc/ssh/ssh_host_*
-
-# NGINX Proxy
-COPY --from=proxy nginx.conf /etc/nginx/nginx.conf
-COPY --from=proxy readme.html /usr/share/nginx/html/readme.html
-
-# Copy the README.md
-COPY README.md /usr/share/nginx/html/README.md
-
-# Start Scripts
-COPY --from=scripts start.sh /
-RUN chmod +x /start.sh
-
-# Welcome Message
-COPY --from=logo runpod.txt /etc/runpod.txt
-RUN echo 'cat /etc/runpod.txt' >> /root/.bashrc
-RUN echo 'echo -e "\nFor detailed documentation and guides, please visit:\n\033[1;34mhttps://docs.runpod.io/\033[0m and \033[1;34mhttps://blog.runpod.io/\033[0m\n\n"' >> /root/.bashrc
-
-# Set the default command for the container
-CMD [ "/start.sh" ]
+# Clone only the pygmtsar2 branch
+RUN git config --global http.postBuffer 524288000 \
+&& git clone --branch pygmtsar2 --single-branch https://github.com/AlexeyPechnikov/pygmtsar.git \
+&& mv pygmtsar/notebooks ./notebooks \
+&& mv pygmtsar/README.md ./ \
+&& rm -rf pygmtsar work

@@ -20,7 +20,8 @@ RUN apt-get -y update \
 # define installation and binaries search paths
 ARG GMTSAR=/usr/local/GMTSAR
 ARG ORBITS=/usr/local/orbits
-ENV PATH=${GMTSAR}/bin:$PATH
+ENV PATH=${GMTSAR}/bin:$PATH \
+    NOTEBOOK_ARGS="--allow-root --no-browser --ip=* --FileContentsManager.delete_to_trash=False --ServerApp.allow_origin=* --ServerApp.preferred_dir=${HOME}"
 
 # install GMTSAR from git
 RUN cd $(dirname ${GMTSAR}) \

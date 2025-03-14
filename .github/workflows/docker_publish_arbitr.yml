@@ -7,6 +7,10 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
+# Parameters are:
+# inputs.repo - repository name under dockerhub namespace (only after "/")
+# inputs.path - current repository directory path under selected branch, containing Dockerfile ({inputs.path}/Dockerfile)
+
 name: Publish arbitrary Docker image
 
 on: 

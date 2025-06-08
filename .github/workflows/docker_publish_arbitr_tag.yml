@@ -12,7 +12,7 @@
 # inputs.path - current repository directory path under selected branch, containing Dockerfile ({inputs.path}/Dockerfile). For example "./templates/pygmtsar"
 # inputs.tag - a tag added to a branch name
 
-name: Publish arbitrary Docker image
+name: Publish arbitrary Docker image w/tag
 
 on: 
   workflow_dispatch:

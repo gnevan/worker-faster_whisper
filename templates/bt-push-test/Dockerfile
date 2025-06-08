@@ -16,7 +16,7 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 COPY . .
 
 # Expose the port on which uvicorn will listen (adjust if needed)
-EXPOSE 80
+EXPOSE 443
 
 # Run the FastAPI application using uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "443"]

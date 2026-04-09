@@ -36,7 +36,7 @@ RUN cd $(dirname ${GMTSAR}) \
 
 # install PyGMTSAR and additional libraries
 RUN apt-get -y update \
-&&  apt-get -y install xvfb libegl1-mesa \
+&&  apt-get -y install xvfb libegl1-mesa libgdal-dev gdal-bin \
 &&  apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN conda install -y -c conda-forge vtk panel xvfbwrapper pyvista
 # magick fix for the library
@@ -46,9 +46,11 @@ RUN pip3 install \
     asf_search==7.0.4 \
     h5netcdf==1.3.0 \
     h5py==3.10.0 \
+    rasterio==1.3.11 \
     ipywidgets==8.1.1 \
     ipyleaflet==0.19.1 \
     remotezip==0.12.2 \
+    jupyter_bokeh \
     pygmtsar \
 && jupyter lab build \
 && jupyter labextension install jupyter-leaflet \
